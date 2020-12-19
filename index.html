@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>File System</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+
+	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+	<style>
+		.page-content {
+			background-color: rgb(236, 236, 236);
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app">
+		<v-app id="vue-app" style="display: none;">
+			<v-main class="page-content">
+				<v-container>
+					<v-dialog v-model="showDialog" max-width="30%" persistent>
+						<v-card flat class="Card-style pa-2">
+							<v-card-title style="color: blue; background-color: lavender">
+								Add {{type}}
+							</v-card-title>
+							<v-form lazy-validation class="ma-3">
+								<v-row>
+									<v-col cols="12">
+										<v-text-field v-model="name" :label="`Add ${type}`"
+											:prepend-icon="type.toLowerCase() === 'directory' ? 'folder' : 'insert_drive_file'">
+										</v-text-field>
+									</v-col>
+								</v-row>
+							</v-form>
+
+							<v-card-actions>
+								<v-row align="center" justify="center" no-gutters>
+									<v-btn color="error" class="ma-2" @click="showDialog = false; name: ''; type: ''">
+										Cancel</v-btn>
+									<v-btn color="primary" @click="create" class="ma-2">
+										Apply</v-btn>
+								</v-row>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+
+
+					<v-card>
+						<v-row no-gutters>
+							<v-toolbar-title class="ma-2">File System</v-toolbar-title>
+							<v-spacer></v-spacer>
+							<!-- <v-btn color="primary" class="ma-2" @click="getVars">
+								Get Vars
+							</v-btn>
+							<v-btn color="primary" class="ma-2" @click="getFS">
+								Console
+							</v-btn> -->
+							<v-btn color="primary" class="ma-2" @click="showDialog = true; type = 'Directory'">
+								<v-icon left>
+									folder
+								</v-icon>
+								Create Folder
+							</v-btn>
+							<v-btn color="primary" class="ma-2" @click="showDialog = true; type = 'File'">
+								<v-icon left>
+									insert_drive_file
+								</v-icon>
+								Create File
+							</v-btn>
+						</v-row>
+						<div>
+
+							<v-btn small text @click="goBack" v-if="Object.keys(currentDirectory).length > 0">
+								<v-icon>arrow_back</v-icon>
+								Back
+							</v-btn>
+
+							<v-breadcrumbs :items="paths">
+								<template v-slot:divider>
+									<v-icon>mdi-chevron-right</v-icon>
+								</template>
+							</v-breadcrumbs>
+						</div>
+						<v-divider class="mx-4"></v-divider>
+
+						<v-list dense>
+							<!-- {{currentDirectory}} -->
+							<v-list-item v-for="(item, i) in items" :key="i" @click="open(item)">
+								<v-list-item-icon>
+									<v-icon>{{item.type === 'directory' ? 'folder' : 'insert_drive_file'}}</v-icon>
+								</v-list-item-icon>
+								<v-list-item-content>
+									<!-- {{item}} -->
+									<v-list-item-title v-text="item.name"></v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+
+						<v-card-text v-if="items.length === 0">
+							<v-row align="center" justify="center">
+								<strong>No Folder or File</strong>
+							</v-row>
+						</v-card-text>
+					</v-card>
+				</v-container>
+			</v-main>
+		</v-app>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+	<script type="module" src="./index.js"></script>
+</body>
+
+</html>
